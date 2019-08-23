@@ -17,12 +17,15 @@
 
 package com.android_rsap.teslaloggerwakeup;
 
+import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -32,9 +35,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends Activity
 {
-    private static final String CHANNEL_ID = "default";
+    public static final String CHANNEL_INFO = "default";
+    public static final String CHANNEL_ERROR = "error";
+
     private int selected;
     private List<String> deviceNames;
 
@@ -43,6 +48,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        createNotificationChannel();
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
@@ -72,8 +78,11 @@ public class MainActivity extends AppCompatActivity
                 final SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
 
                 Spinner spinner1 = findViewById(R.id.spinner_device);
-                String newDevice = spinner1.getSelectedItem().toString();
-                editor.putString(AclReceiver.PREFKEY_DEVICE_NAME, newDevice);
+                if (spinner1.getSelectedItem() != null)
+                {
+                    String newDevice = spinner1.getSelectedItem().toString();
+                    editor.putString(AclReceiver.PREFKEY_DEVICE_NAME, newDevice);
+                }
 
                 EditText edit1 = findViewById(R.id.edit_token);
                 CharSequence newToken = edit1.getText();
@@ -92,5 +101,26 @@ public class MainActivity extends AppCompatActivity
                 AclReceiver.sendWakeup(MainActivity.this, token);
             }
         });
+    }
+
+    private void createNotificationChannel()
+    {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+
+            NotificationChannel channel = new NotificationChannel(CHANNEL_INFO, getString(R.string.channel_name), NotificationManager.IMPORTANCE_LOW);
+            channel.setDescription(getString(R.string.channel_description));
+
+            notificationManager.createNotificationChannel(channel);
+
+            channel = new NotificationChannel(CHANNEL_ERROR, getString(R.string.error_channel_name), NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription(getString(R.string.error_channel_description));
+            channel.enableVibration(true);
+
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

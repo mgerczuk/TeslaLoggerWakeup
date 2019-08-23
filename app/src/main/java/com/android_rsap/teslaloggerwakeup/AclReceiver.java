@@ -23,6 +23,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -40,6 +42,8 @@ public class AclReceiver extends BroadcastReceiver
 
     public static final String DEFAULT_DEVICE = "";
     public static final String DEFAULT_TOKEN = "";
+
+    private static int notificationId = 1;
 
     static void sendWakeup(final Context context, String token)
     {
@@ -59,18 +63,38 @@ public class AclReceiver extends BroadcastReceiver
                     @Override
                     public void onResponse(String response)
                     {
-                        Toast.makeText(context, context.getString(R.string.response_is) + response, Toast.LENGTH_LONG).show();
+                        createNotification(context, context.getString(R.string.response_is) + response, false, MainActivity.CHANNEL_INFO);
                     }
                 }, new Response.ErrorListener()
         {
             @Override
             public void onErrorResponse(VolleyError error)
             {
-                Toast.makeText(context, R.string.http_get_failed, Toast.LENGTH_LONG).show();
+                createNotification(context, error.getMessage(), true, MainActivity.CHANNEL_ERROR);
             }
         });
 
         queue.add(stringRequest);
+    }
+
+    private static void createNotification(Context context, String message, boolean vibrate, String channelId)
+    {
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
+        // notificationId is a unique int for each notification that you must define
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle(context.getText(R.string.app_name))
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                .setContentText(message)
+                .setTicker(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        if (channelId.equals(MainActivity.CHANNEL_ERROR))
+            builder.setDefaults(NotificationCompat.DEFAULT_VIBRATE);
+
+        notificationManager.notify(notificationId, builder.build());
     }
 
     @Override
