@@ -49,7 +49,7 @@ public class AclReceiver extends BroadcastReceiver
     {
         if (TextUtils.isEmpty(token))
         {
-            Toast.makeText(context, R.string.token_is_empty, Toast.LENGTH_LONG).show();
+            createNotification(context, context.getString(R.string.title_error), context.getString(R.string.token_is_empty), MainActivity.CHANNEL_ERROR);
             return;
         }
 
@@ -63,21 +63,21 @@ public class AclReceiver extends BroadcastReceiver
                     @Override
                     public void onResponse(String response)
                     {
-                        createNotification(context, context.getString(R.string.response_is) + response, false, MainActivity.CHANNEL_INFO);
+                        createNotification(context, context.getString(R.string.title_info), context.getString(R.string.response_is) + response, MainActivity.CHANNEL_INFO);
                     }
                 }, new Response.ErrorListener()
         {
             @Override
             public void onErrorResponse(VolleyError error)
             {
-                createNotification(context, error.getMessage(), true, MainActivity.CHANNEL_ERROR);
+                createNotification(context, context.getString(R.string.title_error), error.getMessage(), MainActivity.CHANNEL_ERROR);
             }
         });
 
         queue.add(stringRequest);
     }
 
-    private static void createNotification(Context context, String message, boolean vibrate, String channelId)
+    private static void createNotification(Context context, String title, String message, String channelId)
     {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
@@ -85,7 +85,7 @@ public class AclReceiver extends BroadcastReceiver
         // notificationId is a unique int for each notification that you must define
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle(context.getText(R.string.app_name))
+                .setContentTitle(title)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setContentText(message)
                 .setTicker(message)

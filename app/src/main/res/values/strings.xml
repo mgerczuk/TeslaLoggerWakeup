@@ -2,7 +2,6 @@
     <string name="app_name">TeslaLogger Wakeup</string>
     <string name="token_is_empty">Token is empty.</string>
     <string name="response_is">Response is:</string>
-    <string name="http_get_failed">That didn\'t work!</string>
     <string name="bluetooth_name">Bluetooth Name:</string>
     <string name="token">Token:</string>
     <string name="force_wakeup">Wakeup Now!</string>
@@ -11,4 +10,6 @@
     <string name="channel_description">Shows info about TeslaLogger HTTP request</string>
     <string name="error_channel_name">TeslaLogger Errors</string>
     <string name="error_channel_description">Shows failed TeslaLogger HTTP request</string>
+    <string name="title_info">Info</string>
+    <string name="title_error">Error</string>
 </resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TeslaLogger Wakeup</string>
+    <string name="token_is_empty">Token ist leer.</string>
+    <string name="response_is">Antwort ist:</string>
+    <string name="bluetooth_name">Bluetooth Name:</string>
+    <string name="token">Token:</string>
+    <string name="force_wakeup">Jetzt Wecken!</string>
+    <string name="apply">Anwenden</string>
+    <string name="channel_name">TeslaLogger Infos</string>
+    <string name="channel_description">Zeigt Informationen über TeslaLogger HTTP Aufrufe an</string>
+    <string name="error_channel_name">TeslaLogger Errors</string>
+    <string name="error_channel_description">Zeigt fehlgeschlagene TeslaLogger HTTP Aufrufe an</string>
+    <string name="title_info">Info</string>
+    <string name="title_error">Fehler</string>
+</resources>
